@@ -12,6 +12,10 @@ The game Breakout aka Bricks made in Ruby using libgosu. A project inspired by *
 
 Mouse to move the paddle and ESC to quit
 
+## Thanks to
+
+ - [Kenny](http://kenney.nl) for marvelous free game art
+
 ## Contributing
 
 1. Fork it ( http://github.com/rationalrevolt/breakout-ruby/fork )
