@@ -8,19 +8,27 @@ module Breakout
   end
 
   class Window < Gosu::Window
+    MAX_MILLIS = 2 ** 32
+    
+    def height
+      super
+    end
+    
+    def width
+      super
+    end
+    
     private
 
-    attr_reader :delta_t
     attr_reader :paddle, :ball, :walls, :collider
-    attr_accessor :mx, :my, :old_mx, :old_my
+    attr_accessor :mx, :my, :old_mx, :old_my, :old_millis, :current_millis
 
     def initialize
       super 640, 480, false
       self.caption = "Breakout!"
 
-      @delta_t = fps.fdiv 1000
       @mx, @my = 0, 0
-      
+      @current_millis = 0
       @paddle = Paddle.new(self)
       @ball = Ball.new(self)
       @walls = Walls.new(self)
@@ -36,6 +44,8 @@ module Breakout
       exit if button_down? Gosu::KbEscape
 
       update_mouse
+      update_millis
+      
       paddle.move_by mouse_x_delta
 
       collider.do_collisions delta_t
@@ -52,8 +62,23 @@ module Breakout
       self.mx, self.my = mouse_x, mouse_y
     end
 
+    def update_millis
+      self.old_millis = current_millis
+      self.current_millis = Gosu::milliseconds
+
+      begin
+        overflow_millis = MAX_MILLIS - old_millis
+        self.old_millis = 0
+        self.current_millis += overflow_millis
+      end if current_millis < old_millis
+    end
+
     def mouse_x_delta
       mx - old_mx
+    end
+
+    def delta_t
+      (current_millis - old_millis).fdiv 1000
     end
 
     def exit
