@@ -4,7 +4,7 @@ module Breakout
     include ImageAABB
 
     def initialize window
-      init_image_aabb Gosu::Image.new(window, "png/paddleBlu.png", false)
+      init_image_aabb Gosu::Image.new(window, "png/paddleRed.png", false)
       init_position x: (window.width - image.width) / 2,
                     y: window.height - (image.height * 2)
 
@@ -26,7 +26,6 @@ module Breakout
     end
 
     private
-    
     attr_reader :min_x, :max_x
   end
 end
