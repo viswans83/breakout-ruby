@@ -10,7 +10,9 @@ The game Breakout aka Bricks made in Ruby using libgosu. A project inspired by *
 
 ## Controls
 
-Mouse to move the paddle and ESC to quit
+ - Mouse to move the paddle
+ - Space to start game or pause
+ - ESC to quit
 
 ## Thanks to
 
