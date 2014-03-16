@@ -22,6 +22,7 @@ module Breakout
           ball.down_after(delta_t) < paddle.down and
           ball.left_after(delta_t) > paddle.left and
           ball.right_after(delta_t) < paddle.right)
+        ball.vx -= paddle.velocity * 0.25
         ball.bounce_y
         event_queue.add_event :collision
       end
@@ -41,8 +42,7 @@ module Breakout
         event_queue.add_event :collision
       end
       if ball.moving_down? and ball.down_after(delta_t) > wall.down
-        ball.bounce_y
-        event_queue.add_event :collision
+        event_queue.add_event :game_over
       end
     end
   end

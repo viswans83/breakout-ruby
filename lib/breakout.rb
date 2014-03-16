@@ -6,36 +6,21 @@ require "breakout/aabb"
 require "breakout/paddle"
 require "breakout/ball"
 require "breakout/wall"
+require "breakout/event"
 require "breakout/collider"
 require "breakout/sound"
 
 module Breakout
+  FRAME_RATE = 60
+  FRAME_DELTA_T = 1.fdiv FRAME_RATE
+  
   class ZOrder
     Back,Normal,Front,Ball = 0,1,2,3
   end
 
-  Event = Struct.new(:type, :data)
-
-  class EventQueue
-    def initialize
-      @data = Array.new
-    end
-
-    def add_event ev
-      data.unshift(ev)
-    end
-
-    def next_event
-      data.pop
-    end
-
-    private
-    attr_reader :data
-  end
-  
   class GameWindow < Gosu::Window
     private
-
+    attr_accessor :paused
     attr_reader :event_queue
     attr_reader :sound_lib
     attr_reader :paddle, :ball, :wall, :collider
@@ -57,22 +42,32 @@ module Breakout
                                paddle: paddle,
                                ball: ball,
                                event_queue: event_queue
+      init_game
+    end
 
-      ball.vx = 300
-      ball.vy = -300
+    def init_game
+      self.paused = true
+      ball.init_position x: width/2, y: height/2
+
+      direction = (rand * 100).to_i.even? ? 1 : -1
+      ball.init_velocity vx: (300 + (rand * 100)) * direction,
+                         vy: -300
     end
         
-    def update
-      exit if escape_pressed?
+    alias_method :reset_game, :init_game
 
+    def update
       update_mouse
 
-      paddle.move_by mouse_x_delta
-      collider.do_collisions delta_t
-      ball.move delta_t
+      if not paused
+        paddle.move_by mouse_x_delta
+        collider.do_collisions delta_t
+        ball.move delta_t
 
-      case event_queue.next_event
-      when :collision then sound_lib.random_bouncing_sound.play
+        case event_queue.next_event
+        when :collision then sound_lib.random_bouncing_sound.play
+        when :game_over then reset_game
+        end
       end
     end
 
@@ -91,14 +86,21 @@ module Breakout
     end
 
     def delta_t
-      1.fdiv 60
+      FRAME_DELTA_T
     end
 
-    def escape_pressed?
-      button_down? Gosu::KbEscape
+    def button_down id
+      case id
+      when Gosu::KbSpace then toggle_pause
+      when Gosu::KbEscape then exit_game
+      end
     end
 
-    def exit
+    def toggle_pause
+      self.paused = !paused
+    end
+
+    def exit_game
       close
     end
   end

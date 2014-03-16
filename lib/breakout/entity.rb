@@ -5,8 +5,6 @@ module Breakout
     def init_position p
       @x, @y = p[:x], p[:y]
     end
-
-    private :init_position
   end
 
   module HasVelocity
@@ -52,7 +50,5 @@ module Breakout
       self.x = x_after delta_t
       self.y = y_after delta_t
     end
-
-    private :init_velocity
   end
 end

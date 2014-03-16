@@ -1,6 +1,7 @@
 (
 SynthDef(\playTone, { |freq, duration|
-	var w = SinOsc.ar(freq) * XLine.ar(1001,1,duration,add: -1,doneAction:2) / 1000;
+	var envelope = EnvGen.ar(Env.triangle(duration), doneAction: 2);
+	var w = SinOsc.ar(freq, mul: envelope);
 	Out.ar(0,w!2);
 }).add;
 )
