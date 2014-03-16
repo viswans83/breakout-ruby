@@ -47,7 +47,9 @@ module Breakout
 
     def init_game
       self.paused = true
-      ball.init_position x: width/2, y: height/2
+      
+      ball.center_at x: width/2, y: height/2
+      paddle.center_at x: width/2, y: height/2
 
       direction = (rand * 100).to_i.even? ? 1 : -1
       ball.init_velocity vx: (300 + (rand * 100)) * direction,

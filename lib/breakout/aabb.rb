@@ -10,8 +10,11 @@ module Breakout
     def down; y + height; end
     def left; x; end
     def right; x + width; end
-    def center_x; (left + right).fdiv 2; end
-    def center_y; (up + down).fdiv 2; end    
+
+    def center_at p
+      self.x = p[:x] - width / 2
+      self.y = p[:y] - height / 2
+    end
 
     private :init_aabb
   end

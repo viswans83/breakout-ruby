@@ -28,6 +28,10 @@ module Breakout
                end
     end
 
+    def center_at p
+      self.x = p[:x] - width / 2
+    end
+
     private
     attr_reader :min_x, :max_x
   end
