@@ -1,12 +1,12 @@
 module Breakout
-  class Paddle
+  class Brick
     include HasPosition
     include ImageAABB
 
     attr_accessor :velocity
 
     def initialize window
-      init_image_aabb Assets.images[:paddle]
+      init_image_aabb Gosu::Image.new(window, "png/element_green_rectangle.png", false)
       init_position x: (window.width - image.width) / 2,
                     y: window.height - (image.height * 2)
 
@@ -15,21 +15,6 @@ module Breakout
 
     def draw
       image.draw(x,y,ZOrder::Normal)
-    end
-
-    def move_by delta_x
-      new_x = x + delta_x
-      
-      self.velocity = delta_x.fdiv FRAME_DELTA_T
-      self.x = case
-               when new_x > max_x then max_x
-               when new_x < min_x then min_x
-               else new_x
-               end
-    end
-
-    def center_at p
-      self.x = p[:x] - width / 2
     end
 
     private

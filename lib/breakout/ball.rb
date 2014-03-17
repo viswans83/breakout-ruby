@@ -10,7 +10,7 @@ module Breakout
                     y: window.height / 2
       init_velocity vx: 0,
                     vy: 0
-      init_image_aabb Gosu::Image.new(window, "png/ballBlue.png", false)
+      init_image_aabb Assets.images[:ball]
     end
     
     def draw

@@ -1,6 +1,7 @@
 require "gosu"
 
 require "breakout/version"
+require "breakout/assets"
 require "breakout/entity"
 require "breakout/aabb"
 require "breakout/paddle"
@@ -8,7 +9,6 @@ require "breakout/ball"
 require "breakout/wall"
 require "breakout/event"
 require "breakout/collider"
-require "breakout/sound"
 
 module Breakout
   FRAME_RATE = 60
@@ -22,18 +22,18 @@ module Breakout
     private
     attr_accessor :paused
     attr_reader :event_queue
-    attr_reader :sound_lib
     attr_reader :paddle, :ball, :wall, :collider
     attr_accessor :mx, :my, :old_mx, :old_my
 
     def initialize
       super 640, 480, false
-
+      
+      Assets.load self
+      
       @caption = "Breakout!"
       @mx, @my = 0, 0
       
       @event_queue = EventQueue.new
-      @sound_lib = SoundLib.new(self)
       
       @paddle = Paddle.new(self)
       @ball = Ball.new(self)
@@ -67,7 +67,7 @@ module Breakout
         ball.move delta_t
 
         case event_queue.next_event
-        when :collision then sound_lib.random_bouncing_sound.play
+        when :collision then Assets.random_bounce_sound.play
         when :game_over then reset_game
         end
       end
