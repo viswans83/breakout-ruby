@@ -6,7 +6,7 @@ module Breakout
     attr_accessor :velocity
 
     def initialize window
-      init_image_aabb Assets.images[:paddle]
+      init_image_aabb Assets.image(:paddle)
       init_position x: (window.width - image.width) / 2,
                     y: window.height - (image.height * 2)
 
@@ -26,10 +26,6 @@ module Breakout
                when new_x < min_x then min_x
                else new_x
                end
-    end
-
-    def center_at p
-      self.x = p[:x] - width / 2
     end
 
     private

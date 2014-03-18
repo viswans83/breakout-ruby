@@ -7,6 +7,8 @@ require "breakout/aabb"
 require "breakout/paddle"
 require "breakout/ball"
 require "breakout/wall"
+require "breakout/brick"
+require "breakout/level"
 require "breakout/event"
 require "breakout/collider"
 
@@ -23,6 +25,7 @@ module Breakout
     attr_accessor :paused
     attr_reader :event_queue
     attr_reader :paddle, :ball, :wall, :collider
+    attr_accessor :bricks
     attr_accessor :mx, :my, :old_mx, :old_my
 
     def initialize
@@ -42,14 +45,19 @@ module Breakout
                                paddle: paddle,
                                ball: ball,
                                event_queue: event_queue
-      init_game
+      init_game      
     end
 
     def init_game
       self.paused = true
+      self.bricks = Level.load("levels/basic.yaml").bricks
+
+      bricks.define_singleton_method(:draw) do
+        each { |brick| brick.draw }
+      end
       
       ball.center_at x: width/2, y: height/2
-      paddle.center_at x: width/2, y: height/2
+      paddle.center_at x: width/2
 
       direction = (rand * 100).to_i.even? ? 1 : -1
       ball.init_velocity vx: (300 + (rand * 100)) * direction,
@@ -67,7 +75,7 @@ module Breakout
         ball.move delta_t
 
         case event_queue.next_event
-        when :collision then Assets.random_bounce_sound.play
+        when :collision then Assets.sound(Assets::BOUNCE_SOUNDS.sample).play
         when :game_over then reset_game
         end
       end
@@ -76,6 +84,7 @@ module Breakout
     def draw
       paddle.draw
       ball.draw
+      bricks.draw
     end
 
     def update_mouse

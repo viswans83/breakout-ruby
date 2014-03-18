@@ -1,23 +1,33 @@
 module Breakout
   class Brick
     include HasPosition
-    include ImageAABB
+    include AABB
 
-    attr_accessor :velocity
+    attr_reader :color
+    
+    def initialize brick_def
+      init_position x: brick_def[:x],
+                    y: brick_def[:y]
+      init_aabb width: 64, height: 32
 
-    def initialize window
-      init_image_aabb Gosu::Image.new(window, "png/element_green_rectangle.png", false)
-      init_position x: (window.width - image.width) / 2,
-                    y: window.height - (image.height * 2)
+      @color = brick_def[:color]
+    end
 
-      @min_x, @max_x = 0, window.width - width
+    def destroyed?
+      @destroyed
+    end
+
+    def destory
+      @destroyed = true
     end
 
     def draw
-      image.draw(x,y,ZOrder::Normal)
+      Assets.image(image_asset_key).draw(x,y,ZOrder::Normal)
     end
 
     private
-    attr_reader :min_x, :max_x
+    def image_asset_key
+      @image_sym ||= "brick_#{color}".to_sym
+    end
   end
 end

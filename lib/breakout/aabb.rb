@@ -12,8 +12,8 @@ module Breakout
     def right; x + width; end
 
     def center_at p
-      self.x = p[:x] - width / 2
-      self.y = p[:y] - height / 2
+      self.x = p[:x] - width / 2 if p[:x]
+      self.y = p[:y] - height / 2 if p[:y]
     end
 
     private :init_aabb
