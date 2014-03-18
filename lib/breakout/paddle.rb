@@ -8,7 +8,7 @@ module Breakout
     def initialize window
       init_image_aabb Assets.image(:paddle)
       init_position x: (window.width - image.width) / 2,
-                    y: window.height - (image.height * 2)
+                    y: window.height - (image.height * 1.5)
 
       @min_x, @max_x = 0, window.width - width
     end

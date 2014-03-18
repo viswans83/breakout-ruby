@@ -15,8 +15,6 @@ module Breakout
       self.x = p[:x] - width / 2 if p[:x]
       self.y = p[:y] - height / 2 if p[:y]
     end
-
-    private :init_aabb
   end
 
   module ImageAABB
@@ -29,7 +27,6 @@ module Breakout
     end
 
     private
-
     attr_reader :image
   end
   

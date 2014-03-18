@@ -17,7 +17,7 @@ module Breakout
       @destroyed
     end
 
-    def destory
+    def destroy
       @destroyed = true
     end
 

@@ -53,7 +53,7 @@ module Breakout
       self.bricks = Level.load("levels/basic.yaml").bricks
 
       bricks.define_singleton_method(:draw) do
-        each { |brick| brick.draw }
+        each { |brick| brick.draw if not brick.destroyed? }
       end
       
       ball.center_at x: width/2, y: height/2
@@ -62,6 +62,8 @@ module Breakout
       direction = (rand * 100).to_i.even? ? 1 : -1
       ball.init_velocity vx: (300 + (rand * 100)) * direction,
                          vy: -300
+
+      collider.bricks = bricks
     end
         
     alias_method :reset_game, :init_game
@@ -76,6 +78,7 @@ module Breakout
 
         case event_queue.next_event
         when :collision then Assets.sound(Assets::BOUNCE_SOUNDS.sample).play
+        when :level_complete then reset_game
         when :game_over then reset_game
         end
       end
