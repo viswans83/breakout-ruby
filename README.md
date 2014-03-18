@@ -14,6 +14,10 @@ The game Breakout aka Bricks made in Ruby using libgosu. A project inspired by *
  - Space to start game or pause
  - ESC to quit
 
+## Screenshot
+
+![Breakout (Level basic)](screenshots/breakout.png)
+
 ## Thanks to
 
  - [Kenny](http://kenney.nl) for marvelous free game art
