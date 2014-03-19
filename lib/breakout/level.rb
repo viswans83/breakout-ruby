@@ -16,18 +16,31 @@ module Breakout
   end
 
   class LevelProgress
-    attr_accessor :bricks_remaining
-
-    def initialize brick_count
+    attr_reader :score
+    
+    def initialize brick_count, &level_complete_action
+      @score = 0
       @bricks_remaining = brick_count
+      @level_complete_action = level_complete_action
+    end
+
+    def on_level_complete &level_complete_action
+      @level_complete_action = level_complete_action
     end
 
     def brick_down
-      self.bricks_remaining -= 1
+      self.score = score + 1
+      self.bricks_remaining = bricks_remaining - 1
+      level_complete_action.call if level_complete_action && level_complete?
     end
 
     def level_complete?
       bricks_remaining == 0
     end
+
+    private
+    attr_writer :score
+    attr_accessor :bricks_remaining
+    attr_reader :level_complete_action
   end
 end
