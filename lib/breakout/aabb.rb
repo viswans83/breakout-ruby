@@ -11,6 +11,10 @@ module Breakout
     def left; x; end
     def right; x + width; end
 
+    def center
+      {x: x + width/2, y: y + height/2}
+    end
+
     def center_at p
       self.x = p[:x] - width / 2 if p[:x]
       self.y = p[:y] - height / 2 if p[:y]

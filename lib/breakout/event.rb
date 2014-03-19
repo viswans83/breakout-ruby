@@ -12,6 +12,10 @@ module Breakout
       data.pop
     end
 
+    def empty?
+      data.empty?
+    end
+
     private
     attr_reader :data
   end

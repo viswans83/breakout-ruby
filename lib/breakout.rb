@@ -22,10 +22,10 @@ module Breakout
 
   class GameWindow < Gosu::Window
     private
-    attr_accessor :paused
-    attr_reader :event_queue
-    attr_reader :paddle, :ball, :wall, :collider
-    attr_accessor :bricks
+    attr_accessor :paused, :game_started
+    attr_accessor :level_progress
+    attr_accessor :paddle, :ball, :wall, :bricks
+    attr_accessor :collider, :event_queue
     attr_accessor :mx, :my, :old_mx, :old_my
 
     def initialize
@@ -50,20 +50,23 @@ module Breakout
 
     def init_game
       self.paused = true
+      self.game_started = false
       self.bricks = Level.load("levels/basic.yaml").bricks
+      self.level_progress = LevelProgress.new bricks.size
 
+      collider.bricks = bricks
+      
       bricks.define_singleton_method(:draw) do
         each { |brick| brick.draw if not brick.destroyed? }
       end
       
-      ball.center_at x: width/2, y: height/2
       paddle.center_at x: width/2
+      ball.center_at x: paddle.center[:x],
+                     y: (paddle.y - ball.height/2)
 
       direction = (rand * 100).to_i.even? ? 1 : -1
       ball.init_velocity vx: (300 + (rand * 100)) * direction,
                          vy: -300
-
-      collider.bricks = bricks
     end
         
     alias_method :reset_game, :init_game
@@ -71,16 +74,36 @@ module Breakout
     def update
       update_mouse
 
-      if not paused
+      unless game_started
+        paddle.move_by mouse_x_delta
+        ball.center_at x: paddle.center[:x]
+      end
+      
+      unless paused
         paddle.move_by mouse_x_delta
         collider.do_collisions delta_t
         ball.move delta_t
 
-        case event_queue.next_event
-        when :collision then Assets.sound(Assets::BOUNCE_SOUNDS.sample).play
-        when :level_complete then reset_game
-        when :game_over then reset_game
+        until event_queue.empty? do
+          event = event_queue.next_event
+          event_type = event[:type]
+
+          case event_type
+          when :collision
+            collision_with = event[:with]
+            case collision_with
+            when :paddle, :wall, :brick
+              Assets.sound(Assets::BOUNCE_SOUNDS.sample).play
+            when :floor
+              reset_game
+            end
+            level_progress.brick_down if collision_with == :brick
+          else
+            puts "Unknown event type: #{event_type}"
+          end
         end
+
+        reset_game if level_progress.level_complete?
       end
     end
 
@@ -105,9 +128,16 @@ module Breakout
 
     def button_down id
       case id
-      when Gosu::KbSpace then toggle_pause
-      when Gosu::KbEscape then exit_game
+      when Gosu::MsLeft, Gosu::KbSpace
+        start_game unless game_started
+        toggle_pause if game_started
+      when Gosu::KbEscape
+        exit_game
       end
+    end
+
+    def start_game
+      self.game_started = true
     end
 
     def toggle_pause
