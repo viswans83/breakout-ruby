@@ -1,6 +1,8 @@
 require "gosu"
 
 require "breakout/version"
+require "breakout/constants"
+require "breakout/input"
 require "breakout/assets"
 require "breakout/entity"
 require "breakout/aabb"
@@ -13,20 +15,13 @@ require "breakout/event"
 require "breakout/collider"
 
 module Breakout
-  FRAME_RATE = 60
-  FRAME_DELTA_T = 1.fdiv FRAME_RATE
-  
-  class ZOrder
-    Back,Normal,Front,Ball = 0,1,2,3
-  end
-
   class GameWindow < Gosu::Window
     private
+    attr_reader :input
     attr_accessor :game_paused, :game_in_progress
     attr_accessor :level_progress
     attr_accessor :paddle, :ball, :wall, :bricks
     attr_accessor :collider, :event_queue
-    attr_accessor :mx, :my, :old_mx, :old_my
 
     def initialize
       super 640, 480, false
@@ -34,8 +29,8 @@ module Breakout
       Assets.load self
       
       @caption = "Breakout!"
-      @mx, @my = 0, 0
-      
+
+      @input = Input.new
       @event_queue = EventQueue.new
       
       @paddle = Paddle.new(self)
@@ -76,17 +71,17 @@ module Breakout
     alias_method :reset_game, :init_game
 
     def update
-      update_mouse
+      update_and_handle_input
 
       unless game_in_progress
-        paddle.move_by mouse_x_delta
+        paddle.move_by input.mouse_x_delta
         ball.center_at x: paddle.center[:x]
       end
       
       unless game_paused
-        paddle.move_by mouse_x_delta
-        collider.do_collisions delta_t
-        ball.move delta_t
+        paddle.move_by input.mouse_x_delta
+        collider.do_collisions input.delta_t
+        ball.move input.delta_t
         process_game_events
       end
     end
@@ -132,25 +127,13 @@ module Breakout
       reset_game
     end
     
-    def update_mouse
-      self.old_mx, self.old_my = mx, my
-      self.mx, self.my = mouse_x, mouse_y
-    end
-    
-    def mouse_x_delta
-      mx - old_mx
-    end
-
-    def delta_t
-      FRAME_DELTA_T
-    end
-
-    def button_down id
-      case id
-      when Gosu::MsLeft, Gosu::KbSpace
+    def update_and_handle_input
+      input.update(self)
+      case 
+      when input.space_pressed?, input.mouse_clicked?
         start_game unless game_in_progress
         toggle_game_paused if game_in_progress
-      when Gosu::KbEscape
+      when input.escape_pressed?
         exit_game
       end
     end
