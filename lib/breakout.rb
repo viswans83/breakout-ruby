@@ -1,6 +1,7 @@
 require "gosu"
 
 require "breakout/version"
+require "breakout/constants"
 require "breakout/assets"
 require "breakout/entity"
 require "breakout/aabb"
@@ -13,13 +14,6 @@ require "breakout/event"
 require "breakout/collider"
 
 module Breakout
-  FRAME_RATE = 60
-  FRAME_DELTA_T = 1.fdiv FRAME_RATE
-  
-  class ZOrder
-    Back,Normal,Front,Ball = 0,1,2,3
-  end
-
   class GameWindow < Gosu::Window
     private
     attr_accessor :game_paused, :game_in_progress
