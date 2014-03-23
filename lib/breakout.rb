@@ -23,7 +23,7 @@ module Breakout
       @caption = "Breakout!"
 
       Assets.load self      
-      init_game      
+      init_game
     end
 
     def init_game
@@ -36,11 +36,10 @@ module Breakout
       paddle.set_image Assets.image(:paddle)
       paddle.set_size_from_image
       paddle.set_z_order ZOrder::Normal
-      paddle.center_at x: width/2,
+      paddle.center_at x: width / 2,
                        y: height - paddle.height
       paddle.set_bounds min_x: 0,
                         max_x: width - paddle.width
-      paddle.mouse_velocity = 0
       
       self.ball = Ball.new
       ball_direction = (rand * 100).to_i.even? ? 1 : -1

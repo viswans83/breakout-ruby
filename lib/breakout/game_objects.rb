@@ -1,10 +1,7 @@
 module Breakout
   class Wall < GameObject; end
   class Ball < GameObject; end
-
-  class Paddle < GameObject
-    attr_accessor :mouse_velocity
-  end
+  class Paddle < GameObject; end
 
   class Brick < GameObject
     attr_accessor :destroyed
