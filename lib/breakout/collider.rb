@@ -1,31 +1,23 @@
 module Breakout
   class Collider
-    attr_accessor :bricks
-    
+    attr_reader :wall, :paddle, :bricks, :ball
+    attr_reader :event_queue
+
     def initialize objects
       @wall = objects[:wall]
       @paddle = objects[:paddle]
+      @bricks = objects[:bricks]
       @ball = objects[:ball]
       @event_queue = objects[:event_queue]
     end
 
-    def do_collisions delta_t
-      collide_ball_paddle delta_t
-      collide_ball_wall delta_t
-      collide_ball_bricks delta_t
-    end
-
-    private
-    attr_reader :wall, :paddle, :ball
-    attr_reader :event_queue
-
-    def collide_ball_paddle delta_t
+    def collide_ball_paddle delta_t, paddle_velocity
       if (ball.moving_down? and
           ball.down_after(delta_t) > paddle.up and
           ball.down_after(delta_t) < paddle.down and
           ball.left_after(delta_t) > paddle.left and
           ball.right_after(delta_t) < paddle.right)
-        ball.vx -= paddle.velocity * 0.25
+        ball.vx -= paddle_velocity * 0.25
         ball.bounce_y
         event_queue.add_event collision_with(:paddle)
       end
