@@ -1,3 +1,5 @@
+require "breakout/constants"
+require "breakout/game"
 require "breakout/entity"
 require "breakout/game_objects"
 require "breakout/level"
@@ -7,7 +9,7 @@ require "breakout/input"
 require "breakout/clock"
 
 module Breakout
-  class Factory
+  class GameFactory
     attr_reader :window, :assets
     
     def initialize window, assets
