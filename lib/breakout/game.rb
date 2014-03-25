@@ -37,7 +37,9 @@ module Breakout
     def draw
       paddle.draw
       ball.draw
-      bricks.draw
+      bricks.each do |brick|
+        brick.draw unless brick.destroyed?
+      end
     end
 
     def process_game_events

@@ -55,10 +55,7 @@ module Breakout
                                y: brick_def[:y]
           end
         end
-        bricks.define_singleton_method(:draw) do
-          each { |brick| brick.draw if not brick.destroyed? }
-        end
-        
+                
         level_progress = LevelProgress.new(bricks.size)
         level_progress.on_level_complete do
           game.end_game
@@ -79,7 +76,7 @@ module Breakout
             game.start_game unless game.game_in_progress
             game.toggle_game_paused if game.game_in_progress
           when Gosu::KbEscape
-            game.exit_game
+            game.end_game
           end
         end
 
