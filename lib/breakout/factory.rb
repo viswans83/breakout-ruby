@@ -75,8 +75,6 @@ module Breakout
           when Gosu::MsLeft, Gosu::KbSpace
             game.start_game unless game.game_in_progress
             game.toggle_game_paused if game.game_in_progress
-          when Gosu::KbEscape
-            game.end_game
           end
         end
 

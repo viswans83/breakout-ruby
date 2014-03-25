@@ -2,6 +2,7 @@ module Breakout
   class GameWindow < Gosu::Window
     attr_accessor :mx, :my, :old_mx, :old_my
     attr_accessor :game
+    attr_accessor :game_over_action
 
     def initialize width, height, caption
       @caption = caption
@@ -12,7 +13,7 @@ module Breakout
       update_input
       update_game
 
-      close if game_over?
+      handle_game_over if game_over?
     end
 
     def draw
@@ -39,11 +40,24 @@ module Breakout
     end
     
     def button_down key
-      input_handler.key_down key
+      case key
+      when Gosu::KbEscape
+        close
+      else
+        input_handler.key_down key
+      end
     end
 
     def game_over?
       game.game_over?
+    end
+
+    def on_game_over &proc
+      self.game_over_action = proc
+    end
+
+    def handle_game_over
+      game_over_action.call
     end
   end
 end
