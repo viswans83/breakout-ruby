@@ -1,7 +1,7 @@
 require "breakout/constants"
 require "breakout/game"
 require "breakout/entity"
-require "breakout/game_objects"
+require "breakout/objects"
 require "breakout/level"
 require "breakout/event"
 require "breakout/collider"
