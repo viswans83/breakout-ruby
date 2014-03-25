@@ -5,8 +5,8 @@ module Breakout
     attr_accessor :game_over_action
 
     def initialize width, height, caption
-      @caption = caption
       super width, height, false
+      self.caption = caption
     end
     
     def update
