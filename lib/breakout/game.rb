@@ -30,7 +30,15 @@ module Breakout
         collider.collide_ball_bricks delta_t
 
         ball.move delta_t
+        
         process_game_events
+        step_animation
+      end
+    end
+
+    def step_animation
+      bricks.each do |brick|
+        brick.step_animation delta_t if brick.visible?
       end
     end
 
@@ -38,7 +46,7 @@ module Breakout
       paddle.draw
       ball.draw
       bricks.each do |brick|
-        brick.draw unless brick.destroyed?
+        brick.draw if brick.visible?
       end
     end
 

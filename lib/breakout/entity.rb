@@ -162,5 +162,7 @@ module Breakout
     include HasVelocity
     include Bounded
     include Drawable
+
+    def step_animation delta_t; end
   end
 end
