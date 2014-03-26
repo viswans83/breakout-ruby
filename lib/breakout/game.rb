@@ -38,7 +38,7 @@ module Breakout
 
     def step_animation
       bricks.each do |brick|
-        brick.step_animation delta_t if brick.visible?
+        brick.step_animation delta_t if brick.destroyed? and brick.visible?
       end
     end
 

@@ -10,36 +10,39 @@ module Breakout
     alias_method :visible?, :visible
 
     def initialize
-      @visible = true
+      self.visible = true
     end
     
-    def destroy
-      @destroyed = true
-      @ttl = @total_ttl = 0.5
-    end
-
-    def visibility_factor
-      destroyed ? ttl.fdiv(total_ttl) : 1
+    def destroy ball_velocity
+      self.destroyed = true
+      self.ttl = self.total_ttl = 0.5
+      set_rotation(0)
+      set_scale(1)
+      set_angular_velocity(ball_velocity * 1.5)
     end
 
     def step_animation delta_t
-      if destroyed? and visible?
-        self.ttl = ttl - delta_t
-        dissappear if ttl < 0
-      end
+      self.ttl = ttl - delta_t
+      set_mask Gosu::Color.rgba(255,255,255,alpha_value)
+      set_scale visibility
+      rotate delta_t
+
+      dissappear if ttl < 0
     end
 
     def dissappear
       self.visible = false
     end
 
-    def draw
-      alpha = (255 * visibility_factor).to_i
-      color = Gosu::Color.rgba(255,255,255,alpha)
-      image.draw(x,y,z_order,1,1,color)
-    end
-
     private
     attr_accessor :ttl, :total_ttl
+
+    def alpha_value
+      (255 * visibility).to_i
+    end
+
+    def visibility
+      ttl.fdiv(total_ttl)
+    end
   end
 end

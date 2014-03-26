@@ -13,6 +13,18 @@ module Breakout
     end
   end
 
+  module HasRotation
+    attr_accessor :angle
+
+    def set_rotation angle
+      self.angle = angle
+    end
+
+    def rotate_by delta
+      self.angle = angle + delta
+    end
+  end
+
   module HasSize
     attr_accessor :height, :width
 
@@ -42,6 +54,17 @@ module Breakout
     def set_velocity v
       self.vx = v[:vx]
       self.vy = v[:vy]
+    end
+
+    def velocity
+      {
+        vx: vx,
+        vy: vy
+      }
+    end
+
+    def scalar_velocity
+      Math.sqrt(vx ** 2 + vy ** 2)
     end
 
     def moving_right?
@@ -98,6 +121,21 @@ module Breakout
     end
   end
 
+  module HasAngularVelocity
+    attr_accessor :angular_velocity
+
+    def set_angular_velocity angular_velocity
+      self.angular_velocity = angular_velocity
+    end
+
+    def rotate delta_t
+      if angle
+        self.angle = angle + (angular_velocity * delta_t)
+        self.angle = self.angle - 360 if self.angle > 360
+      end
+    end
+  end
+
   module Bounded
     attr_accessor :min_x, :max_x
     attr_accessor :min_y, :max_y
@@ -136,6 +174,8 @@ module Breakout
 
   module Drawable
     attr_accessor :image
+    attr_accessor :mask
+    attr_accessor :scale
     attr_accessor :z_order
 
     def set_image image
@@ -146,23 +186,40 @@ module Breakout
       self.z_order = z_order
     end
 
+    def set_mask color
+      self.mask = color
+    end
+
+    def set_scale scale
+      self.scale = scale
+    end
+
     def set_size_from_image
       set_size height: image.height,
                width: image.width
     end
     
     def draw
-      image.draw(x,y,z_order)
+      if angle
+        image.draw_rot(center[:x],center[:y],z_order,angle,0.5,0.5,scale || 1,scale || 1,mask || Gosu::Color::WHITE)
+      else
+        image.draw(x,y,z_order,scale || 1,scale || 1,mask || Gosu::Color::WHITE)
+      end
     end
+  end
+
+  module HasAnimation
+    def step_animation delta_t; end
   end
 
   class GameObject
     include HasPosition
+    include HasRotation
     include HasSize
     include HasVelocity
+    include HasAngularVelocity
     include Bounded
     include Drawable
-
-    def step_animation delta_t; end
+    include HasAnimation
   end
 end
