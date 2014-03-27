@@ -13,12 +13,12 @@ module Breakout
       self.visible = true
     end
     
-    def destroy ball_velocity
+    def destroy
       self.destroyed = true
       self.ttl = self.total_ttl = 0.5
       set_rotation(0)
       set_scale(1)
-      set_angular_velocity(ball_velocity * 1.5)
+      set_angular_velocity(360 * 4)
     end
 
     def step_animation delta_t
