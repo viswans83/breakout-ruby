@@ -1,6 +1,6 @@
 module Breakout
   class Game
-    attr_accessor :assets
+    attr_accessor :sound_box
     attr_accessor :game_paused, :game_in_progress, :game_over
     attr_accessor :paddle, :ball, :wall, :bricks
     attr_accessor :collider, :event_queue, :level_progress
@@ -74,7 +74,7 @@ module Breakout
     end
 
     def play_sound
-      assets.sound(Assets::BOUNCE_SOUNDS.sample).play
+      sound_box.play_sound(BALL_BOUNCE_SOUND_KEYS.sample)
     end
 
     def clear_brick

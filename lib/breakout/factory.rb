@@ -25,7 +25,7 @@ module Breakout
         paddle = Paddle.new
         paddle.set_image assets.image(:paddle)
         paddle.set_size_from_image
-        paddle.set_z_order ZOrder::Normal
+        paddle.set_z_order ZOrder::NORMAL
         paddle.center_at x: window.width / 2,
                          y: window.height - paddle.height
         paddle.set_bounds min_x: 0,
@@ -35,7 +35,7 @@ module Breakout
         ball_direction = (rand * 100).to_i.even? ? 1 : -1
         ball.set_image assets.image(:ball)
         ball.set_size_from_image
-        ball.set_z_order ZOrder::Ball
+        ball.set_z_order ZOrder::BALL
         ball.center_at x: paddle.center[:x],
                        y: (paddle.y - ball.height/2)
         ball.set_velocity vx: (300 + (rand * 100)) * ball_direction,
@@ -52,7 +52,7 @@ module Breakout
             image_key = "brick_#{brick_def[:color]}".to_sym
             brick.set_image assets.image(image_key)
             brick.set_size_from_image
-            brick.set_z_order ZOrder::Normal
+            brick.set_z_order ZOrder::NORMAL
             brick.set_position x: brick_def[:x],
                                y: brick_def[:y]
           end
@@ -80,6 +80,8 @@ module Breakout
           end
         end
 
+        sound_box = SoundBox.new assets
+
         game.paddle = paddle
         game.ball = ball
         game.wall = wall
@@ -89,7 +91,7 @@ module Breakout
         game.level_progress = level_progress
         game.clock = clock
         game.input_handler = input_handler
-        game.assets = assets
+        game.sound_box = sound_box
       end
     end
   end

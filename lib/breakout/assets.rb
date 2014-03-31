@@ -1,9 +1,5 @@
 module Breakout
   class Assets
-    BRICK_COLORS = %w[blue green grey purple red yellow]
-    BRICK_IMAGES = BRICK_COLORS.map { |c| ("brick_" + c).to_sym }
-    BOUNCE_SOUNDS = %w[a4 b4 c4 d4 e4 f4 g4 a5].map { |n| n.to_sym }
-
     attr_reader :window, :images, :sounds
     def initialize window
       @window = window
@@ -27,9 +23,16 @@ module Breakout
     def load_images
       images[:ball] = load_image "png/ballBlue.png"
       images[:paddle] = load_image "png/paddleRed.png"
-      BRICK_COLORS.each do |color|
-        key = "brick_" + color
-        images[key.to_sym] = load_image "png/element_#{color}_rectangle.png"
+      %w[blue green grey purple red yellow].each do |color|
+        key = "brick_#{color}".to_sym
+        images[key] = load_image "png/element_#{color}_rectangle.png"
+      end
+    end
+
+    def load_sounds
+      %w[a4 b4 c4 d4 e4 f4 g4 a5].map do |note|
+        key = "bounce_#{note}".to_sym
+        sounds[key] = load_sound "snd/#{note}.wav"
       end
     end
 
@@ -37,14 +40,20 @@ module Breakout
       Gosu::Image.new window, path, false
     end
 
-    def load_sounds
-      BOUNCE_SOUNDS.map do |note|
-        sounds[note] = load_sound "snd/#{note}.wav"
-      end
-    end
-
     def load_sound path
       Gosu::Sample.new window, path
+    end
+  end
+
+  class SoundBox
+    attr_accessor :assets
+    
+    def initialize assets
+      self.assets = assets
+    end
+    
+    def play_sound key
+      assets.sound(key).play
     end
   end
 end
